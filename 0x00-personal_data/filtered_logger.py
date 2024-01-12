@@ -11,11 +11,11 @@ PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 
 def filter_datum(fields: List[str], redaction: str,
-        message: str, separator: str) -> str:
+                 message: str, separator: str) -> str:
     """Returns a log message obfuscated"""
     for f in fields:
         message = re.sub(f'{f}=.*?{separator}',
-        f'{f}={redaction}{separator}', message)
+                         f'{f}={redaction}{separator}', message)
         return message
 
 
@@ -40,9 +40,9 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
     db_name = environ.get("PERSONAL_DATA_DB_NAME")
 
     cnx = mysql.connector.connection.MySQLConnection(user=username,
-            password=password,
-            host=host,
-            database=db_name)
+                                                     password=password,
+                                                     host=host,
+                                                     database=db_name)
     return cnx
 
 
@@ -79,7 +79,7 @@ class RedactingFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         """ Filters values in incoming log records using filter_datum """
         record.msg = filter_datum(self.fields, self.REDACTION,
-        record.getMessage(), self.SEPARATOR)
+                                  record.getMessage(), self.SEPARATOR)
         return super(RedactingFormatter, self).format(record)
 
 
